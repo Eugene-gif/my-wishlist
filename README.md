@@ -1,76 +1,107 @@
+# 🎁 Wishlist
 
-# Nuxt Minimal Starter
+**Wishlist — приложение для списков подарков на Nuxt 4, Vue 3 и SQLite.** Идея проекта — собрать подарки в одном списке и поделиться им с друзьями. Друзья смогут бронировать подарки и сохранять сюрприз для владельца списка. Сейчас работают вход через GitHub и личный раздел «Мои вишлисты». Создание списков, публикация ссылки и бронирование пока в планах.
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+---
 
-## Setup
+## 📌 Оглавление
 
-Make sure to install dependencies:
+- [Функционал](#-функционал)
+- [Технологический стек](#-технологический-стек)
+- [Быстрый старт](#-быстрый-старт)
+- [База данных](#-база-данных)
+- [Сборка и развёртывание](#-сборка-и-развёртывание)
+- [Проверка кода](#-проверка-кода)
+
+---
+
+## ✨ Функционал
+
+- 🔑 **Вход через GitHub.** После успешного входа приложение создаёт или обновляет профиль пользователя в базе данных.
+- 📋 **Личный раздел.** Страница «Мои вишлисты» доступна после входа и показывает имя пользователя.
+- 🎨 **Оформление.** Интерфейс поддерживает светлую и тёмную темы.
+
+---
+
+## 🛠 Технологический стек
+
+| Слой                                      | Технологии                             |
+| :-------------------------------------------- | :----------------------------------------------- |
+| Интерфейс                            | Nuxt 4, Vue 3, TypeScript, Nuxt UI, Tailwind CSS |
+| Сервер                                  | Nitro, серверные маршруты Nuxt  |
+| Авторизация                        | GitHub OAuth, nuxt-auth-utils                    |
+| Хранение данных                 | SQLite, libSQL, Drizzle ORM                      |
+| Миграции и проверка кода | Drizzle Kit, ESLint                              |
+
+---
+
+## 🚀 Быстрый старт
+
+### Требования
+
+- Node.js 24 LTS. Для установленной версии Nuxt подходит Node.js 24.15.0 и новее в ветке 24.x.
+- npm 11 или новее.
+
+### Установка и запуск
+
+1. Склонируйте репозиторий и установите зависимости.
+
+   ```bash
+   git clone https://github.com/Eugene-gif/my-wishlist.git
+   cd my-wishlist
+   npm ci
+   ```
+2. Создайте файл `.env` в корне проекта по шаблону `.env.example`. Для входа зарегистрируйте OAuth App в GitHub, заполните настройки OAuth в `.env` и укажите `http://localhost:3000/auth/github` как URL обратного вызова.
+3. Запустите сервер разработки.
+
+   ```bash
+   npm run dev
+   ```
+
+   Приложение откроется по адресу [http://localhost:3000](http://localhost:3000).
+
+---
+
+## 🗄 База данных
+
+| Команда          | Назначение                                                     |
+| :---------------------- | :----------------------------------------------------------------------- |
+| `npm run db:generate` | Создать SQL-миграции по изменениям схемы |
+| `npm run db:migrate`  | Применить ожидающие миграции                   |
+| `npm run db:studio`   | Открыть Drizzle Studio                                            |
+
+Перед запуском через `npm run dev`, `npm run preview` или `npm start` npm автоматически запускает миграции. Если миграция завершается с ошибкой, сервер не стартует. Выполняйте эти команды из корня репозитория с установленными зависимостями для разработки.
+
+Обе команды, миграция и запуск приложения, по умолчанию используют `file:local.db`. Если нужен другой файл, задайте одинаковый `NUXT_DATABASE_URL` **в окружении обоих процессов**. Drizzle Kit читает значение из окружения, поэтому для миграций одной записи в `.env` недостаточно.
+
+---
+
+## 📦 Сборка и развёртывание
 
 ```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
 npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+npm run preview
 ```
 
-Locally preview production build:
+Nuxt сохраняет production-сборку в `.output`. Команда `preview` запускает её локально. Из корня репозитория собранное приложение можно запустить через `npm start`.
+
+Если на сервер доставляется только `.output`, выполните `npm run db:migrate` один раз для этого развёртывания из исходников той же версии с установленным Drizzle Kit. Запустите сервер после успешной миграции.
 
 ```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
+NODE_ENV=production node .output/server/index.mjs
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+Передайте настройки GitHub OAuth, стабильный `NUXT_APP_SECRET` и адрес базы данных в окружение production-сервера. Для SQLite используйте абсолютный URL, например `file:/var/lib/wishlist/local.db`. Миграции и сервер должны работать с одним файлом в постоянном хранилище. [Документация Nuxt по развёртыванию](https://nuxt.com/docs/4.x/getting-started/deployment)
+
+---
+
+## ✅ Проверка кода
+
+```bash
+npm run lint
+npm run lint:fix
+```
+
+Первая команда проверяет код. Вторая автоматически исправляет замечания ESLint, для которых доступно исправление.
+
+[К оглавлению](#-оглавление)
