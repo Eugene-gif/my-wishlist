@@ -1,3 +1,4 @@
+// import { db, tables } from './../../utils/db'
 import { sendRedirect } from 'nuxt/server'
 
 export default defineOAuthGitHubEventHandler({
