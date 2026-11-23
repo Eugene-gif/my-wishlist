@@ -6,7 +6,7 @@ const { user } = useUserSession()
 const UIname = computed(() => user.value?.name || 'Неизвестный')
 
 const toast = useToast()
-const { data: wishlists, refresh } = await useFetch('/api/wishlists')
+const { data: wishlists, status, refresh } = await useFetch('/api/wishlists')
 
 const state = reactive({ title: '' })
 
@@ -50,13 +50,34 @@ const create = async () => {
       </UFormField>
       <UButton
         type="submit"
+        loading-auto
         icon="i-lucide-plus"
         label="Создать"
       />
     </UForm>
 
+    <p
+      v-if="status === 'pending'"
+      class="mt-8 text-muted"
+      role="status"
+    >
+      Загружаем вишлисты…
+    </p>
     <UEmpty
-      v-if="!wishlists?.length"
+      v-else-if="status === 'error'"
+      class="mt-8"
+      icon="i-lucide-triangle-alert"
+      title="Не удалось загрузить вишлисты"
+    >
+      <template #actions>
+        <UButton
+          label="Повторить"
+          @click="refresh()"
+        />
+      </template>
+    </UEmpty>
+    <UEmpty
+      v-else-if="!wishlists?.length"
       class="mt-8"
       icon="i-lucide-gift"
       title="Здесь пока пусто"
