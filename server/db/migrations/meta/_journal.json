@@ -8,6 +8,13 @@
       "when": 1795297807473,
       "tag": "0000_medical_madelyne_pryor",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1795429056058,
+      "tag": "0001_solid_zaladane",
+      "breakpoints": true
     }
   ]
 }
